@@ -6,13 +6,13 @@ using System.Collections.ObjectModel;
 
 namespace ToDoApp.ViewModels
 {
-    class MainViewModel(IGoalService goalService) : BaseViewModel
+    class MainViewModel : BaseViewModel
     {
-        private readonly IGoalService _goalService = goalService;
+        private readonly IGoalService _goalService;
 
         #region model's property
 
-        public ObservableCollection<GoalViewModel> Goals => new(_goalService.GetAll());
+        public ObservableCollection<GoalViewModel> Goals { get; set; } 
 
         private string _title = "ToDoApp"; 
         public string Title
@@ -41,11 +41,16 @@ namespace ToDoApp.ViewModels
             get => _start;
             set
             {
-                if(value >= DateTime.Now)
+                if(value >= DateTime.Now && IsUpdated == "Collapsed")
                 {
                     _start = value;
                     OnPropertyChanged(nameof(Start));
                     End = value;
+                }
+                else
+                {
+                    _start = value;
+                    OnPropertyChanged(nameof(Start));
                 }
             }
         }
@@ -56,7 +61,12 @@ namespace ToDoApp.ViewModels
             get => _end;
             set
             {
-                if(value >= _start)
+                if(value >= _start && IsUpdated == "Collapsed")
+                {
+                    _end = value;
+                    OnPropertyChanged(nameof(End));
+                }
+                else
                 {
                     _end = value;
                     OnPropertyChanged(nameof(End));
@@ -64,12 +74,21 @@ namespace ToDoApp.ViewModels
             }
         }
 
+
+        #region Other dates
+
+        #region date for serching
+
         private DateTime _searchDate = DateTime.Now;
         public DateTime SearchDate
         {
             get => _searchDate;
             set => Set(ref _searchDate, value);
         }
+
+        #endregion
+
+        #endregion
 
         private string _goalText = string.Empty;
         public string GoalText
@@ -83,6 +102,20 @@ namespace ToDoApp.ViewModels
         {
             get => _selectedGoal;
             set => Set(ref _selectedGoal, value);
+        }
+
+        private string isUpdated = "Collapsed";
+        public string IsUpdated
+        {
+            get => isUpdated;
+            set => Set(ref isUpdated, value);
+        }
+
+        private int selectedIndex;
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set => Set(ref selectedIndex, value);
         }
 
         #endregion
@@ -180,11 +213,105 @@ namespace ToDoApp.ViewModels
 
         public void OnUpdateGoalCommand(object parameter)
         {
-            SelectedGoal = null;
+            IsUpdated = "Visible";
+
+            Start = SelectedGoal.StartDate;
+            End = SelectedGoal.EndDate;
+
+            GoalText = SelectedGoal.Text;
+            SelectedIndex = SelectedGoal.Id;
+        }
+
+        #region help commands
+
+        #region cancel update
+
+        private ICommand? cancelUpdateGoalCommand;
+        public ICommand CancelUpdateGoalCommand => cancelUpdateGoalCommand ??= new LambdaCommand(OnCancelUpdateGoalCommand, CanCancelUpdateGoalCommand);
+
+        public bool CanCancelUpdateGoalCommand(object parameter) => true;
+        public async void OnCancelUpdateGoalCommand(object parameter)
+        {
+            IsUpdated = "Collapsed";
+            Start = DateTime.Now;
+            End = DateTime.Now;
+            GoalText = string.Empty;
+        }
+
+        #endregion
+
+        #region accept update a goal
+
+        private ICommand? acceptUpdateGoalCommand;
+        public ICommand AcceptUpdateGoalCommand => acceptUpdateGoalCommand ??= new LambdaCommand(OnAcceptUpdateGoalCommand, CanAcceptUpdateGoalCommand);
+
+        public bool CanAcceptUpdateGoalCommand(object parameter)
+        {
+            if(SelectedGoal is null)
+            {
+                return false;
+            }
+            else
+            {
+                if(!Equals(Start, SelectedGoal.StartDate) || !Equals(End, SelectedGoal.EndDate) || !Equals(GoalText, SelectedGoal.Text))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public async void OnAcceptUpdateGoalCommand(object parameter)
+        {
+            var goal = (GoalViewModel)(await _goalService.GetByIdAsync(SelectedIndex));
+
+            if(!Equals(Start, goal.StartDate))
+            {
+                goal.StartDate = Start;
+            }
+            if(!Equals(End, goal.EndDate))
+            {
+                goal.EndDate = End;
+            }
+            if(!Equals(GoalText, goal.Text))
+            {
+                goal.Text = GoalText;
+            }
+            
+            var result = await _goalService.UpdateGoalAsync(goal);
+
+            if(result is string)
+            {
+                Error = result.ToString();
+            }
+            else
+            {
+                IsUpdated = "Collapsed";
+                Start = DateTime.Now;
+                End = DateTime.Now;
+                GoalText = string.Empty;
+                var gvm = await _goalService.GetByIdAsync(SelectedIndex) as GoalViewModel;
+                int index = Goals.IndexOf(Goals.FirstOrDefault(vm => vm.Id == SelectedIndex));
+                Goals[index] = gvm;
+                OnPropertyChanged(nameof(Goals));
+            }
         }
 
         #endregion
 
         #endregion
+
+        #endregion
+
+        #endregion
+
+        public MainViewModel(IGoalService goalService)
+        {
+            _goalService = goalService;
+            Goals = new(_goalService.GetAll());
+        }
     }
 }

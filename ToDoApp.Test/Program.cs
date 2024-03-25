@@ -1,14 +1,19 @@
 ﻿using System.Text.Json;
 using ToDoApp.Test;
 
-var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
-var s = AppDomain.CurrentDomain.BaseDirectory;
 
-Connector connector = new("SQLITE", s);
+DateTime dateTime = DateTime.Now;
 
-var options = new JsonSerializerOptions() { WriteIndented = true };
+Console.WriteLine(dateTime);
 
-var result = JsonSerializer.Serialize(connector, options);
+Console.WriteLine("________________");
 
-File.AppendAllLines(path, [ result ]);
+string dateOnly = dateTime.ToShortDateString();
+var timeOnly = dateTime.TimeOfDay;
 
+Console.WriteLine(dateOnly);
+Console.WriteLine(timeOnly);
+Thread.Sleep(2000);
+DateTime dateTime1 = DateTime.Parse(string.Concat(dateOnly, ", ", timeOnly));
+
+Console.WriteLine(dateTime1);

@@ -75,5 +75,27 @@ namespace ToDoApp.Services
 
             return result;
         }
+
+        public async Task<object> UpdateGoalAsync(GoalViewModel goalViewModel)
+        {
+            object result;
+
+            try
+            {
+                var goal = await _goalRepository.GetItemById(goalViewModel.Id);
+
+                goal.Text = goalViewModel.Text;
+                goal.StartDate = goalViewModel.StartDate;
+                goal.EndDate = goalViewModel.EndDate;
+
+                result = GoalExtensions.GoalToView(await _goalRepository.UpdateItem(goal));
+            }
+            catch(Exception ex)
+            {
+                result = ex.Message ?? "Необработанная ошибка";
+            }
+
+            return result;
+        }
     }
 }

@@ -58,17 +58,19 @@ namespace ToDoApp.DAL.Repositories
 
         public async Task<Goal> UpdateItem(Goal entity)
         {
+
             if(entity is null)
             { 
                 throw new Exception("Попытка добавить пустую запись");
             }
             else
             {
+                
                 _context.Entry(entity).State = EntityState.Modified;
 
                 if(autoSaveChanges == true)
                 {
-                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                    await _context.SaveChangesAsync();
                 }
 
                 return entity;

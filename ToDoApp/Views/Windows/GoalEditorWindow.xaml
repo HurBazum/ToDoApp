@@ -1,0 +1,52 @@
+﻿<Window x:Class="ToDoApp.Views.Windows.GoalEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ToDoApp.Views.Windows"
+        xmlns:cmd="clr-namespace:ToDoApp.Infrastructure.Commands"
+        mc:Ignorable="d"
+        Title="GoalEditorWindow" Height="234" Width="815"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <DockPanel Margin="0,0,0,-6">
+        <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Right" Height="70" Rows="1">
+            <Button Content="OK" Style="{StaticResource BtnBase}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:GoalEditorWindow}}">
+                <Button.Command>
+                    <cmd:CloseDialogCommand DialogResult="True" />
+                </Button.Command>
+            </Button>
+            <Button Content="Cancel" Style="{StaticResource BtnBase}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:GoalEditorWindow}}">
+                <Button.Command>
+                    <cmd:CloseDialogCommand DialogResult="False" />
+                </Button.Command>                  
+            </Button>
+        </UniformGrid>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="140" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="StackPanel">
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+                <Style TargetType="DatePicker">
+                    <Setter Property="Template" Value="{StaticResource CustomDatePicker}" />
+                </Style>
+            </Grid.Resources>
+            <StackPanel Grid.Column="0">
+                <DatePicker SelectedDate="{Binding StartDate}"  />
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBox Style="{StaticResource ManyLines}" Text="{Binding Text}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <DatePicker SelectedDate="{Binding EndDate}" />
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
