@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ToDoApp"
         xmlns:vm="clr-namespace:ToDoApp.ViewModels"
-        xmlns:snppt="clr-namespace:ToDoApp.Views.Snippets"
+        xmlns:snppt="clr-namespace:ToDoApp.Views.Snippets" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
         Title="{Binding Title}"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
@@ -32,7 +32,11 @@
             </StackPanel>
             <GridSplitter Width="5" Background="GhostWhite" />
             <StackPanel Orientation="Vertical" Margin="7" DockPanel.Dock="Right">
-                <ListBox Height="250" ItemsSource="{Binding Goals}" SelectedItem="{Binding SelectedGoal}" ItemTemplate="{StaticResource GoalViewer}" />
+                <ListBox VirtualizingPanel.IsVirtualizing="True"
+                         VirtualizingPanel.VirtualizationMode="Standard"
+                         Height="250" ItemsSource="{Binding Goals}"
+                         SelectedItem="{Binding SelectedGoal}"
+                         ItemTemplate="{StaticResource GoalViewer}" />
                 <TextBlock MinHeight="50" Text="{Binding Error}" TextWrapping="WrapWithOverflow" FontSize="16" FontWeight="Bold" Foreground="Red" />
                 <snppt:GoalHandler />
             </StackPanel>

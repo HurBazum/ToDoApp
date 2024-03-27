@@ -10,5 +10,6 @@ namespace ToDoApp.Services
         public Task<object> AddGoalAsync(GoalViewModel goalViewModel);
         public Task<object> DeleteGoalAsync(GoalViewModel goalViewModel);
         public Task<object> UpdateGoalAsync(GoalViewModel goalViewModel);
+        public Task<object> UpdateStatusGoalAsync(GoalViewModel goalViewModel);
     }
 }

@@ -3,6 +3,8 @@ using ToDoApp.ViewModels.Base;
 using System.Windows.Input;
 using ToDoApp.Infrastructure.Commands;
 using System.Collections.ObjectModel;
+using System.Windows;
+using ToDoApp.Infrastructure.Enums;
 
 namespace ToDoApp.ViewModels
 {
@@ -104,7 +106,7 @@ namespace ToDoApp.ViewModels
             set => Set(ref _selectedGoal, value);
         }
 
-        private string isUpdated = "Collapsed";
+        private string isUpdated = ButtonVisibilityState.Collapsed.ToString();
         public string IsUpdated
         {
             get => isUpdated;
@@ -289,14 +291,17 @@ namespace ToDoApp.ViewModels
             }
             else
             {
-                IsUpdated = "Collapsed";
+                int index = Goals.IndexOf(Goals.FirstOrDefault(vm => vm.Id == SelectedIndex));
+                
+                Goals[index].StartDate = Start;
+                Goals[index].EndDate = End;
+                Goals[index].Text = GoalText;
+
                 Start = DateTime.Now;
                 End = DateTime.Now;
                 GoalText = string.Empty;
-                var gvm = await _goalService.GetByIdAsync(SelectedIndex) as GoalViewModel;
-                int index = Goals.IndexOf(Goals.FirstOrDefault(vm => vm.Id == SelectedIndex));
-                Goals[index] = gvm;
-                OnPropertyChanged(nameof(Goals));
+
+                IsUpdated = "Collapsed";
             }
         }
 
