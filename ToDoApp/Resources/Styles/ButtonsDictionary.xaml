@@ -115,7 +115,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- Поиск -->
 
     <Style x:Key="SrchBtn" TargetType="Button" BasedOn="{StaticResource BtnBase}">
@@ -141,6 +141,50 @@
                             <Setter Property="Background" TargetName="border" Value="#FF9C8484" />
                             <Setter Property="BorderBrush" TargetName="border" Value="#FF9C8484" />
                             <Setter Property="Button.Background" TargetName="cPresenter" Value="#FF9C8484" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- GoalState Button -->
+    <Style x:Key="StateBtn" TargetType="Button">
+        <Setter Property="Margin" Value="0,5,5,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            BorderBrush="{TemplateBinding Background}"
+                            Background="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            Opacity="0.7">
+                        <ContentPresenter x:Name="cPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+                                          Opacity="0.7"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter Property="Opacity" TargetName="border" Value="1" />
+                            <Setter Property="Button.Opacity" TargetName="cPresenter" Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" TargetName="border">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#FFE6E8EA" Opacity="0.45" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" TargetName="border" Value="1" />
+                            <Setter Property="Background" TargetName="border" >
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#FFA2B6DE" Opacity="1"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Button.FontWeight" TargetName="cPresenter" Value="DemiBold" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

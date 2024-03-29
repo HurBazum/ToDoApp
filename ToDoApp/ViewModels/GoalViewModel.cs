@@ -11,10 +11,9 @@ namespace ToDoApp.ViewModels
     {
         private string text = null!;
         private DateTime start;
-        private DateTime end = default;
+        private DateTime end;
         private bool complited;
         private string actualState = string.Empty;
-        private string goalTimer = string.Empty;
         public int Id { get; set; }
         public string Text
         {
@@ -27,11 +26,6 @@ namespace ToDoApp.ViewModels
             set
             {
                 Set(ref start, value);
-                if(EndDate != default)
-                {
-                    GoalTimer = GetActualTime();
-                    ActualState = GetActualState();
-                }
             }
         }
         public DateTime EndDate
@@ -40,20 +34,27 @@ namespace ToDoApp.ViewModels
             set
             {
                 Set(ref end, value);
-                GoalTimer = GetActualTime();
-                ActualState = GetActualState();
             }
         }
         public bool IsCompleted
         {
             get => complited;
-            set => Set(ref complited, value);
-        }
-
-        public string GoalTimer
-        {
-            get => goalTimer;
-            set => Set(ref goalTimer, value);
+            set
+            {
+                Set(ref complited, value);
+                if(value == false && EndDate < DateTime.Now)
+                {
+                    ActualState = "#FFF2B8C1";
+                }
+                if(value == false && (DateTime.Now < EndDate && EndDate <= DateTime.Now.AddDays(2))) 
+                { 
+                    ActualState = "#FFF1E69B";
+                }
+                if(value == true || EndDate > DateTime.Now)
+                {
+                    ActualState = "#FF7BB1B1";
+                }
+            }
         }
         public string ActualState 
         { 
@@ -70,7 +71,7 @@ namespace ToDoApp.ViewModels
 
         public bool CanCompleteGoalCommand(object parameter)
         {
-            if(IsCompleted == true)
+            if(IsCompleted == true || EndDate < DateTime.Now)
             {
                 return false;
             }
@@ -95,28 +96,16 @@ namespace ToDoApp.ViewModels
         #endregion
 
 
-        #region Property changers
-        string GetActualState()
-        {
-            int daysToEnd = (EndDate - DateTime.Now).Days;
-            if(daysToEnd < 2 && daysToEnd > 0 && IsCompleted == false)
-            {
-                return "#FFF1E69B";
-            }
-            if(daysToEnd < 0 && IsCompleted == false)
-            {
-                return "#FFF2B8C1";
-            }
-            else
-            {
-                return "#FFA6D2BB";
-            }
-        }
+        #region Colors
 
-        string GetActualTime()
-        {
-            return $"С {StartDate} до {EndDate}";
-        }
+        // ??
+
+        /*
+         * "#FFF1E69B"; // yellow
+         * "#FFF2B8C1"; // red
+         * "#FFA6D2BB"; // green
+         * "#FF7BB1B1"; // azure dark
+         * */
 
         #endregion
     }

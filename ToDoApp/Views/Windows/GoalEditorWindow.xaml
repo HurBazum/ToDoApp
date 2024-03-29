@@ -12,15 +12,9 @@
         <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Right" Height="70" Rows="1">
             <Button Content="OK" Style="{StaticResource BtnBase}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:GoalEditorWindow}}">
-                <Button.Command>
-                    <cmd:CloseDialogCommand DialogResult="True" />
-                </Button.Command>
             </Button>
             <Button Content="Cancel" Style="{StaticResource BtnBase}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:GoalEditorWindow}}">
-                <Button.Command>
-                    <cmd:CloseDialogCommand DialogResult="False" />
-                </Button.Command>                  
             </Button>
         </UniformGrid>
         <Grid DockPanel.Dock="Top">

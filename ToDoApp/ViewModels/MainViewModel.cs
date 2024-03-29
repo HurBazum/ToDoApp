@@ -3,8 +3,9 @@ using ToDoApp.ViewModels.Base;
 using System.Windows.Input;
 using ToDoApp.Infrastructure.Commands;
 using System.Collections.ObjectModel;
-using System.Windows;
 using ToDoApp.Infrastructure.Enums;
+using ToDoApp.Infrastructure.Extensions;
+using System.Windows;
 
 namespace ToDoApp.ViewModels
 {
@@ -308,6 +309,57 @@ namespace ToDoApp.ViewModels
         #endregion
 
         #endregion
+
+        #endregion
+
+        #region goals order commads
+
+        #region sort by dates
+
+        private ICommand? sortByDateCommand;
+
+        public ICommand SortByDateCommand => sortByDateCommand ??= new LambdaCommand(OnSortByDateCommand, CanSortByDateCommand);
+
+        private bool CanSortByDateCommand(object parameter)
+        {
+            if(Goals.Count < 2) return false;
+            return true;
+        }
+
+        private void OnSortByDateCommand(object parameter)
+        {
+            Goals = Goals.SortByDate();
+            OnPropertyChanged(nameof(Goals));
+        }
+
+        #endregion
+
+        #region get default goals order 
+
+        private ICommand? refreshGoalsCommand;
+        public ICommand RefreshGoalsCommand => refreshGoalsCommand ??= new LambdaCommand(OnRefreshGoalsCommand, CanRefreshGoalsCommand);
+        private bool CanRefreshGoalsCommand(object parameter) => true;
+        private void OnRefreshGoalsCommand(object parameter)
+        {
+            var defaultOrder = _goalService.GetAll();
+            Goals = new(defaultOrder);
+            OnPropertyChanged(nameof(Goals));
+        }
+
+        #endregion
+
+        #endregion
+
+        #region other commands
+
+        private ICommand? closeAppCommand;
+        public ICommand CloseAppCommand => closeAppCommand ??= new LambdaCommand(OnCloseAppCommand, CanCloseAppCommand);
+
+        private bool CanCloseAppCommand(object parameter) => true;
+        private void OnCloseAppCommand(object parameter)
+        {
+            Application.Current.Shutdown();
+        }
 
         #endregion
 

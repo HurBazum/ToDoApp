@@ -10,10 +10,16 @@
         Title="{Binding Title}"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
         Height="550" Width="815">
+    <Window.InputBindings>
+        <KeyBinding Gesture="Shift+Ctrl+D" Command="{Binding SortByDateCommand}" />
+        <KeyBinding Gesture="Shift+Ctrl+R" Command="{Binding RefreshGoalsCommand}" />
+    </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Exit" />
+                <MenuItem Header="Sort by dates" Command="{Binding SortByDateCommand}" InputGestureText="Shift+Ctrl+D" />
+                <MenuItem Header="Refresh goals" Command="{Binding RefreshGoalsCommand}" InputGestureText="Shift+Ctrl+R" />
+                <MenuItem Header="Exit" Command="{Binding CloseAppCommand}" />
             </MenuItem>
             <MenuItem Header="Help" />
         </Menu>
@@ -23,7 +29,7 @@
         <DockPanel>
             <StackPanel DockPanel.Dock="Left" MinWidth="100" >
                 <Button Content="Добавить" Style="{StaticResource AddBtn}" Command="{Binding AddGoalCommand}" Margin="5,10,5,5" />
-                <Button Content="Изменить" Style="{StaticResource UpdBtn}" Command="{Binding UpdateGoalCommand}" CommandParameter="{Binding SelectedGoal}" />
+                <Button Content="Изменить" Style="{StaticResource UpdBtn}" Command="{Binding UpdateGoalCommand}" />
                 <Button Content="Удалить" Style="{StaticResource DltBtn}" Command="{Binding DeleteGoalCommand}" />
                 <DockPanel Margin="10">
                     <Button Style="{StaticResource SrchBtn}" DockPanel.Dock="Left" />
@@ -33,7 +39,7 @@
             <GridSplitter Width="5" Background="GhostWhite" />
             <StackPanel Orientation="Vertical" Margin="7" DockPanel.Dock="Right">
                 <ListBox VirtualizingPanel.IsVirtualizing="True"
-                         VirtualizingPanel.VirtualizationMode="Standard"
+                         VirtualizingPanel.VirtualizationMode="Recycling"
                          Height="250" ItemsSource="{Binding Goals}"
                          SelectedItem="{Binding SelectedGoal}"
                          ItemTemplate="{StaticResource GoalViewer}" />
